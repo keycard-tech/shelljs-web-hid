@@ -1,8 +1,14 @@
 ## ShellJS Web HID
 
-ShellJS Web HID is based on [@ledgerhq/hw-transport-webhid](@ledgerhq/hw-transport-webhid) and allows to communicate with Keycard Shell using usb HID.
+ShellJS Web HID is an implementation of the communication layer.
 
 ***
+
+### Installation
+
+```
+npm install @choppu/shelljs-web-hid
+```
 
 ### Usage example
 
