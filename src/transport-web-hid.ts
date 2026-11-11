@@ -38,7 +38,7 @@ async function getFirstShellDevice(): Promise<HIDDevice> {
 /**
  * WebHID Transport implementation
  * @example
- import TransportWebHID from "shelljs-web-hid";
+ import TransportWebHID from "@choppu/shelljs-web-hid";
  ...
  let transport: any;
  transport = await TransportWebHID.create();
@@ -81,20 +81,27 @@ export default class TransportWebHID extends ShellJS.Transport {
   };
 
   /**
-   * Check if WebUSB transport is supported.
+   * Checks whether the WebHID transport is supported.
+   *
+   * @returns a promise of a boolean, true when navigator.hid is available
    */
   static isSupported = isSupported;
 
   /**
-   * List the WebUSB devices that was previously authorized by the user.
+   * Lists the WebHID devices that were previously authorized by the user.
+   *
+   * @returns a promise of the list of authorized HIDDevice objects
    */
   static list = getShellDevices;
 
   /**
-   * Actively listen to WebUSB devices and emit ONE device
+   * Actively listens to WebHID devices and emits ONE device
    * that was either accepted before, if not it will trigger the native permission UI.
    *
    * Important: it must be called in the context of a UI click!
+   *
+   * @param observer the observer notified with the device descriptor
+   * @returns a subscription on which unsubscribe() can be called
    */
   static listen = (observer: TransportTypes.Observer<TransportTypes.DescriptorEvent<HIDDevice>>): TransportTypes.Subscription => {
     let unsubscribed = false;
@@ -130,7 +137,9 @@ export default class TransportWebHID extends ShellJS.Transport {
   };
 
   /**
-   * Similar to create() except it will always display the device permission (even if some devices are already accepted).
+   * Similar to create(), except that it will always display the device permission (even if some devices are already accepted).
+   *
+   * @returns a promise of the transport opened on the device granted by the user
    */
   static async request() {
     const [device] = await requestShellDevices();
@@ -138,7 +147,9 @@ export default class TransportWebHID extends ShellJS.Transport {
   }
 
   /**
-   * Similar to create() except it will never display the device permission (it returns a Promise<?Transport>, null if it fails to find a device).
+   * Similar to create(), except that it will never display the device permission (it returns a Promise<?Transport>, null if it fails to find a device).
+   *
+   * @returns a promise of the transport, or null when no authorized device is connected
    */
   static async openConnected() {
     const devices = await getShellDevices();
@@ -147,7 +158,10 @@ export default class TransportWebHID extends ShellJS.Transport {
   }
 
   /**
-   * Create a Shell transport with a HIDDevice
+   * Creates a Shell transport with a HIDDevice.
+   *
+   * @param device the HIDDevice to open
+   * @returns a promise of the opened transport
    */
   static async open(device: HIDDevice) {
     await device.open();
@@ -173,7 +187,9 @@ export default class TransportWebHID extends ShellJS.Transport {
   };
 
   /**
-   * Release the transport device
+   * Releases the transport device.
+   *
+   * @returns a promise resolved once the in-flight exchange completed and the device is closed
    */
   async close(): Promise<void> {
     await this.exchangeBusyPromise;
@@ -182,9 +198,9 @@ export default class TransportWebHID extends ShellJS.Transport {
   }
 
   /**
-   * Exchange with the device using APDU protocol.
+   * Exchanges with the device using the APDU protocol.
    * @param apdu
-   * @returns a promise of apdu response
+   * @returns a promise of the APDU response
    */
   exchange = async (apdu: Buffer): Promise<Buffer> => {
     const b = await this.exchangeAtomicImpl(async () => {
