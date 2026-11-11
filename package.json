@@ -1,6 +1,6 @@
 {
   "name": "@choppu/shelljs-web-hid",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Keycard Shell WebHID implementation of the communication layer",
   "main": "lib/transport-web-hid.js",
   "module": "lib-es/transport-web-hid.js",
@@ -13,19 +13,16 @@
   "scripts": {
     "clean": "rm -rf lib lib-es",
     "prepare": "npm run build",
-    "build": "tsc && tsc -m ES6 --outDir lib-es",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
     "publish": "npm run clean && npm run build && npm publish --access=public"
   },
   "author": "Ksenia Lebedeva",
   "dependencies": {
-    "@choppu/shelljs": "1.0.1"
+    "@choppu/shelljs": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.5.9",
-    "@types/w3c-web-hid": "^1.0.3",
-    "documentation": "^14.0.2",
-    "rimraf": "^5.0.1",
-    "source-map-support": "^0.5.21",
-    "ts-node": "^10.9.1"
+    "@types/node": "^26.6.6",
+    "@types/w3c-web-hid": "^1.0.7",
+    "typescript": "6.0.3"
   }
 }
